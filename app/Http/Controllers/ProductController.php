@@ -22,10 +22,10 @@ class ProductController extends Controller
             'mrp' => 'nullable|numeric',
             'discount' => 'nullable|numeric',
             'offer_price' => 'nullable|numeric',
-            'size_name' => 'nullable|array',
-            'size_name.*' => 'nullable|string',
-            'pack_size' => 'nullable|array',
-            'pack_size.*' => 'nullable|string',
+            
+            'size_name' => 'nullable|string',
+           
+            'pack_size' => 'nullable|string',
             'light_type' => 'nullable|string',
             'wattage' => 'nullable|string',
             'special_feature' => 'nullable|string',
@@ -59,13 +59,7 @@ class ProductController extends Controller
             $validatedData['color_image'] = json_encode($validatedData['color_image']);
         }
 
-        if (isset($validatedData['size_name'])) {
-            $validatedData['size_name'] = json_encode($validatedData['size_name']);
-        }
-
-        if (isset($validatedData['pack_size'])) {
-            $validatedData['pack_size'] = json_encode($validatedData['pack_size']);
-        }
+      
 
         $product = Product::create($validatedData);
 

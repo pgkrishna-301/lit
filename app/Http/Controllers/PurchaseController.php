@@ -3,10 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\CartItem;
+use App\Models\Purchase;
 use Illuminate\Support\Facades\Storage;
 
-class CartItemController extends Controller
+class PurchaseController extends Controller
 {
     public function store(Request $request)
     {
@@ -40,12 +40,12 @@ class CartItemController extends Controller
         }
 
         // Save the data in the database
-        $cartItem = CartItem::create($validated);
+        $Purchase = Purchase::create($validated);
 
         // Return success response
         return response()->json([
             'message' => 'Cart item created successfully.',
-            'data' => $cartItem
+            'data' => $Purchase
         ], 201);
     }
 
@@ -72,35 +72,35 @@ class CartItemController extends Controller
     ]);
 
     // Find the cart item by ID
-    $cartItem = CartItem::find($id);
+    $Purchase = Purchase::find($id);
 
-    if (!$cartItem) {
+    if (!$Purchase) {
         return response()->json(['message' => 'Cart item not found.'], 404);
     }
 
     // Handle file uploads and update storage
     if ($request->hasFile('banner_image')) {
         // Delete the old file if exists
-        if ($cartItem->banner_image) {
-            Storage::disk('public')->delete($cartItem->banner_image);
+        if ($Purchase->banner_image) {
+            Storage::disk('public')->delete($Purchase->banner_image);
         }
         $validated['banner_image'] = $request->file('banner_image')->store('uploads', 'public');
     }
 
     if ($request->hasFile('color_image')) {
-        if ($cartItem->color_image) {
-            Storage::disk('public')->delete($cartItem->color_image);
+        if ($Purchase->color_image) {
+            Storage::disk('public')->delete($Purchase->color_image);
         }
         $validated['color_image'] = $request->file('color_image')->store('uploads', 'public');
     }
 
     // Update cart item with new values
-    $cartItem->update($validated);
+    $Purchase->update($validated);
 
     // Return success response
     return response()->json([
         'message' => 'Cart item updated successfully.',
-        'data' => $cartItem
+        'data' => $Purchase
     ], 200);
 }
 public function addToCart(Request $request)
@@ -121,12 +121,12 @@ public function addToCart(Request $request)
         $validated['banner_image'] = $request->file('banner_image')->store('uploads', 'public');
     }
 
-    $cartItem = CartItem::create($validated);
+    $Purchase = Purchase::create($validated);
 
     return response()->json([
         'success' => true,
         'message' => 'Item added to cart successfully',
-        'data' => $cartItem
+        'data' => $Purchase
     ]);
 }
 
@@ -134,16 +134,16 @@ public function addToCart(Request $request)
     public function index(Request $request, $userId)
     {
         // Fetch cart items filtered by user_id
-        $cartItems = CartItem::where('user_id', $userId)->get();
+        $Purchases = Purchase::where('user_id', $userId)->get();
 
-        if ($cartItems->isEmpty()) {
+        if ($Purchases->isEmpty()) {
             return response()->json([
                 'message' => 'No cart items found for the given user.',
             ], 404);
         }
 
         // Add additional data (e.g., computed discounts or related data)
-        $cartItems->map(function ($item) {
+        $Purchases->map(function ($item) {
             $item->final_price = $item->mrp - ($item->mrp * ($item->discount ?? 0) / 100);
             return $item;
         });
@@ -151,45 +151,45 @@ public function addToCart(Request $request)
         // Return the filtered data
         return response()->json([
             'message' => 'Cart items fetched successfully.',
-            'data' => $cartItems,
+            'data' => $Purchases,
         ], 200);
     }
 
     public function show($id)
     {
         // Fetch a specific cart item by ID
-        $cartItem = CartItem::find($id);
+        $Purchase = Purchase::find($id);
 
-        if (!$cartItem) {
+        if (!$Purchase) {
             return response()->json([
                 'message' => 'Cart item not found.',
             ], 404);
         }
 
         // Add additional data (e.g., computed fields or related items)
-        $cartItem->final_price = $cartItem->mrp - ($cartItem->mrp * ($cartItem->discount ?? 0) / 100);
+        $Purchase->final_price = $Purchase->mrp - ($Purchase->mrp * ($Purchase->discount ?? 0) / 100);
 
         // Return the data
         return response()->json([
             'message' => 'Cart item fetched successfully.',
-            'data' => $cartItem,
+            'data' => $Purchase,
         ], 200);
     }
 
     public function destroy($id)
     {
         // Find the cart item by ID
-        $cartItem = CartItem::find($id);
+        $Purchase = Purchase::find($id);
 
         // Check if the cart item exists
-        if (!$cartItem) {
+        if (!$Purchase) {
             return response()->json([
                 'message' => 'Cart item not found.',
             ], 404);
         }
 
         // Delete the cart item
-        $cartItem->delete();
+        $Purchase->delete();
 
         // Return success response
         return response()->json([

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AddVendorController;
 use App\Http\Controllers\Api\CategoryController as ApiCategoryController;
 use App\Http\Controllers\ArchitectController;
 use Illuminate\Support\Facades\Route;
@@ -15,10 +16,13 @@ use App\Http\Controllers\PlayoBannerController;
 use App\Http\Controllers\PlayoBookBannerController;
 use App\Http\Controllers\ProductOrderController;
 use App\Http\Controllers\ProfessionController;
+use App\Http\Controllers\PurchaseController;
+use App\Http\Controllers\PurchaseOrderController;
 use App\Http\Controllers\QuoteController;
 use App\Http\Controllers\ShippingController;
 use App\Http\Controllers\SportLightController;
 use App\Http\Controllers\SuperAdminController;
+use App\Http\Controllers\VendorController;
 use App\Http\Controllers\WishlistController;
 use App\Models\OrderDetail;
 
@@ -79,6 +83,18 @@ Route::get('/shipping/get/{user_id}', [ShippingController::class, 'show']);
 
 
 
+ Route::post('/purchas-details', [PurchaseOrderController::class, 'store']);
+ Route::get('/purchas-details/get', [OrderDetailController::class, 'getAll']);
+ Route::put('purchas-details/{id}', [OrderDetailController::class, 'update']);
+ Route::get('/purchas-details/get/{id}', [OrderDetailController::class, 'getById']);
+ Route::get('order-details/user/{userId}', [OrderDetailController::class, 'getByUserId']);
+ Route::post('/store-purchas', [ProductOrderController::class, 'store']);
+ Route::put('/purchas/update/{order_id}', [OrderDetailController::class, 'updateorderId']);
+ Route::get('/get/purchas/{order_id}', [OrderDetailController::class, 'getOrderByOrderId']);
+
+
+
+
  Route::post('/quote', [QuoteController::class, 'store']);
  Route::get('/quote/get', [QuoteController::class, 'getAll']);
  Route::put('quote/{id}', [QuoteController::class, 'update']);
@@ -93,6 +109,13 @@ Route::get('/shipping/get/{user_id}', [ShippingController::class, 'show']);
  Route::get('/cart-items/get/{user_id}', [CartItemController::class, 'index']);
  Route::delete('/cart-items/{id}', [CartItemController::class, 'destroy']);
  Route::put('/cart-items/{id}', [CartItemController::class, 'update'])->name('cart-items.update');
+
+
+ Route::post('/purchase-items', [PurchaseController::class, 'store']);
+ Route::get('/purchase-items/get/{user_id}', [PurchaseController::class, 'index']);
+ Route::delete('/purchase-items/{id}', [PurchaseController::class, 'destroy']);
+ Route::put('/purchase-items/{id}', [PurchaseController::class, 'update'])->name('cart-items.update');
+
 
 
 
@@ -134,6 +157,26 @@ Route::get('/shipping/get/{user_id}', [ShippingController::class, 'show']);
 
  Route::post('/images/upload', [ImageController::class, 'store']);
  Route::get('/images/get', [ImageController::class, 'index']); // Get Images API
+ Route::post('/images/{id}', [ImageController::class, 'update'])->name('images.update');
+
+
+
+
+ Route::get('/vendors', [VendorController::class, 'index']);
+ Route::post('/vendors', [VendorController::class, 'store']);
+ Route::get('/vendors/{id}', [VendorController::class, 'show']);
+ Route::put('/vendors/{id}', [VendorController::class, 'update']);
+ Route::delete('/vendors/{id}', [VendorController::class, 'destroy']);
+
+
+
+Route::get('/add-vendors', [AddVendorController::class, 'index']);
+Route::post('/add-vendors', [AddVendorController::class, 'store']);
+Route::get('/add-vendors/{id}', [AddVendorController::class, 'show']);
+Route::put('/add-vendors/{id}', [AddVendorController::class, 'update']);
+Route::delete('/add-vendors/{id}', [AddVendorController::class, 'destroy']);
+
+
 
 
 // php artisan serve --host=0.0.0.0
